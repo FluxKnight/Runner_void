@@ -27,14 +27,14 @@ class ScreenTransition:
 
     def get_duration(self, transition_type):
         durations = {
-            "warp": 0.96,
-            "neon_wipe": 0.76,
-            "cyber_grid": 0.84,
-            "soft_pause": 0.50,
-            "resume_flash": 0.46,
-            "return_slide": 0.66,
-            "crash_glitch": 1.06,
-            "fade_black": 0.90,
+            "warp": 1.02,
+            "neon_wipe": 0.82,
+            "cyber_grid": 0.90,
+            "soft_pause": 0.54,
+            "resume_flash": 0.50,
+            "return_slide": 0.72,
+            "crash_glitch": 1.12,
+            "fade_black": 0.98,
             "slide": 0.70,
         }
 
