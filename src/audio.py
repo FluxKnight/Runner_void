@@ -33,6 +33,9 @@ class AudioManager:
             "SKILL": self.sfx_dir / "skill_pickup.wav",
             "BOSS_WARNING": self.sfx_dir / "boss_warning.wav",
             "BUY": self.sfx_dir / "buy.wav",
+            "SHIP_HOVER": self.sfx_dir / "ship_hover.wav",
+            "SHIP_ROPE": self.sfx_dir / "ship_rope.wav",
+            "SHIP_EXTRACT": self.sfx_dir / "ship_extract.wav",
         }
         self.sfx = {}
 
@@ -162,6 +165,15 @@ class AudioManager:
 
     def play_buy(self):
         self.play_sfx("BUY", 0.45)
+
+    def play_ship_hover(self):
+        self.play_sfx("SHIP_HOVER", 0.46)
+
+    def play_ship_rope(self):
+        self.play_sfx("SHIP_ROPE", 0.42)
+
+    def play_ship_extract(self):
+        self.play_sfx("SHIP_EXTRACT", 0.48)
 
     def stop(self):
         if not self.available:

@@ -32,55 +32,36 @@ def draw_background(surface):
 
     for y in range(SCREEN_HEIGHT):
         k = y / max(1, SCREEN_HEIGHT - 1)
-        r = int(3 + 12 * k)
-        g = int(4 + 8 * k)
-        b = int(11 + 22 * k)
+        r = int(8 + 18 * k)
+        g = int(12 + 18 * k)
+        b = int(24 + 32 * k)
         pygame.draw.line(surface, (r, g, b), (0, y), (SCREEN_WIDTH, y))
 
     glow = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-    cx = SCREEN_WIDTH // 2
-    cy = SCREEN_HEIGHT // 2 - 18
-    pulse = 0.72 + 0.28 * ((math.sin(t * 1.4) + 1) / 2)
-    pygame.draw.circle(glow, (44, 14, 28, int(58 * pulse)), (cx, cy), 300)
-    pygame.draw.circle(glow, (80, 20, 28, int(34 * pulse)), (cx, cy - 10), 200)
-    pygame.draw.circle(glow, (36, 110, 255, 18), (cx, cy + 42), 145)
+    pygame.draw.circle(glow, (90, 40, 60, 52), (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 - 40), 330)
+    pygame.draw.circle(glow, (70, 120, 255, 24), (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 48), 180)
     surface.blit(glow, (0, 0))
+
+    for i in range(20):
+        x = int((i * 97 + t * (16 + (i % 4) * 6)) % (SCREEN_WIDTH + 160)) - 80
+        y = int((i * 59 + t * (10 + (i % 3) * 4)) % (SCREEN_HEIGHT + 180)) - 90
+        pygame.draw.line(surface, (120, 26, 40, 46), (x, y), (x, y + 36), 1)
+        pygame.draw.rect(surface, (160, 28, 40), (x - 1, y + 34, 3, 3), border_radius=2)
 
     horizon_y = SCREEN_HEIGHT - 150
     grid = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-    pygame.draw.line(grid, (65, 65, 82, 60), (90, horizon_y), (SCREEN_WIDTH - 90, horizon_y), 1)
-
-    for i in range(-10, 11):
-        x = cx + i * 96
-        pygame.draw.line(grid, (38, 38, 54, 48), (cx, horizon_y), (x, SCREEN_HEIGHT), 1)
-
+    pygame.draw.line(grid, (72, 72, 92, 74), (80, horizon_y), (SCREEN_WIDTH - 80, horizon_y), 1)
+    for i in range(-11, 12):
+        x = SCREEN_WIDTH // 2 + i * 92
+        pygame.draw.line(grid, (36, 36, 54, 48), (SCREEN_WIDTH // 2, horizon_y), (x, SCREEN_HEIGHT), 1)
     for j in range(1, 8):
         yy = horizon_y + int((j / 8) ** 1.7 * 240)
-        pygame.draw.line(grid, (34, 34, 48, max(15, 55 - j * 5)), (110, yy), (SCREEN_WIDTH - 110, yy), 1)
-
+        pygame.draw.line(grid, (34, 34, 48, max(18, 60 - j * 5)), (90, yy), (SCREEN_WIDTH - 90, yy), 1)
     surface.blit(grid, (0, 0))
 
-    for i in range(26):
-        px = int((i * 97 + t * (16 + (i % 4) * 6)) % (SCREEN_WIDTH + 160)) - 80
-        py = int((i * 59 + t * (10 + (i % 3) * 4)) % (SCREEN_HEIGHT + 180)) - 90
-        size = 2 + (i % 3)
-        tail = 18 + (i % 5) * 12
-        alpha = 60 + (i % 4) * 20
-        particle = pygame.Surface((30, tail + 24), pygame.SRCALPHA)
-        pygame.draw.line(particle, (140, 18, 30, alpha // 2), (15, 0), (15, tail), 1)
-        pygame.draw.rect(particle, (135, 20, 30, alpha), (15 - size, tail - size, size * 2 + 1, size * 2 + 1), border_radius=2)
-        surface.blit(particle, (px - 15, py - 8))
-
-    for i in range(34):
-        sx = int((i * 141 + t * (6 + i % 5)) % SCREEN_WIDTH)
-        sy = int((i * 83 + (i % 4) * 37) % SCREEN_HEIGHT)
-        twinkle = 105 + int(70 * ((math.sin(t * 2 + i) + 1) / 2))
-        dot = pygame.Surface((2, 2), pygame.SRCALPHA)
-        dot.fill((170, 185, 255, twinkle))
-        surface.blit(dot, (sx, sy))
-
-    pygame.draw.line(surface, (54, 56, 72), (120, SCREEN_HEIGHT - 86), (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 86), 1)
-
+    panel = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    pygame.draw.rect(panel, (255, 255, 255, 6), (70, 60, SCREEN_WIDTH - 140, SCREEN_HEIGHT - 120), border_radius=28)
+    surface.blit(panel, (0, 0))
 
 class Button:
     def __init__(self, x, y, w, h, text, action):
@@ -93,8 +74,11 @@ class Button:
         self.hovered = self.rect.collidepoint(mouse_pos)
 
     def draw(self, surface):
-        fill_color = (22, 22, 30) if not self.hovered else (32, 14, 20)
-        border_color = (84, 84, 98) if not self.hovered else RED
+        fill_color = (20, 20, 28) if not self.hovered else (42, 18, 28)
+        border_color = (92, 92, 110) if not self.hovered else RED
+        glow = pygame.Surface((self.rect.w + 24, self.rect.h + 24), pygame.SRCALPHA)
+        pygame.draw.rect(glow, (*border_color, 28 if self.hovered else 14), (12, 12, self.rect.w, self.rect.h), border_radius=18)
+        surface.blit(glow, (self.rect.x - 12, self.rect.y - 12))
         pygame.draw.rect(surface, fill_color, self.rect, border_radius=16)
         pygame.draw.rect(surface, border_color, self.rect, 2, border_radius=16)
         draw_text(surface, self.text, 22, self.rect.centerx, self.rect.centery, WHITE, bold=True)
@@ -564,13 +548,13 @@ class ShopScreen:
         self.card_rects = {}
         data = self.gun_catalog if self.tab == "GUNS" else self.skin_palette
         keys = list(data.keys())
-        card_w = 200
-        card_h = 142
-        gap = 22
-        columns = 3
+        card_w = 180 if self.tab == "SKINS" else 200
+        card_h = 132 if self.tab == "SKINS" else 150
+        gap = 12 if self.tab == "SKINS" else 20
+        columns = 4 if self.tab == "SKINS" else 3
         total_w = columns * card_w + (columns - 1) * gap
         start_x = SCREEN_WIDTH // 2 - total_w // 2
-        start_y = 248
+        start_y = 222 if self.tab == "SKINS" else 240
 
         for i, key in enumerate(keys):
             row, col = divmod(i, columns)
@@ -625,6 +609,22 @@ class ShopScreen:
             pygame.draw.polygon(surface, accent, [(cx - 2, cy - 18), (cx + 11, cy - 2), (cx + 4, cy - 2), (cx + 12, cy + 17), (cx - 11, cy - 4), (cx - 2, cy - 4)])
         elif style == "fire":
             pygame.draw.polygon(surface, accent, [(cx, cy - 18), (cx + 11, cy - 4), (cx + 7, cy + 14), (cx, cy + 8), (cx - 8, cy + 14), (cx - 11, cy - 4)])
+        elif style == "leaf":
+            pygame.draw.polygon(surface, accent, [(cx, cy - 18), (cx + 12, cy - 2), (cx, cy + 14), (cx - 10, cy - 2)])
+        elif style == "toxic":
+            pygame.draw.circle(surface, accent, (cx - 7, cy - 4), 4)
+            pygame.draw.circle(surface, accent, (cx + 7, cy + 2), 5)
+            pygame.draw.circle(surface, accent, (cx - 1, cy + 9), 3)
+        elif style == "crystal":
+            pygame.draw.polygon(surface, accent, [(cx, cy - 18), (cx + 12, cy), (cx, cy + 15), (cx - 12, cy)])
+        elif style == "shadow":
+            pygame.draw.arc(surface, accent, pygame.Rect(cx - 14, cy - 14, 28, 28), 0.6, 2.4, 2)
+        elif style == "crown":
+            pygame.draw.polygon(surface, accent, [(cx - 12, cy - 18), (cx - 5, cy - 8), (cx, cy - 17), (cx + 6, cy - 8), (cx + 13, cy - 18), (cx + 13, cy - 6), (cx - 12, cy - 6)])
+        elif style == "rose":
+            pygame.draw.circle(surface, accent, (cx - 4, cy - 2), 5)
+            pygame.draw.circle(surface, accent, (cx + 4, cy - 2), 5)
+            pygame.draw.circle(surface, accent, (cx, cy + 4), 5)
 
         pygame.draw.circle(surface, WHITE, (cx - 7, cy - 8), 4)
         pygame.draw.circle(surface, (245, 245, 255), (cx, cy), 21, 2)
@@ -634,10 +634,14 @@ class ShopScreen:
         pygame.draw.line(surface, (70, 70, 82), (cx - 38, cy), (cx + 38, cy), 2)
         pygame.draw.rect(surface, (255, 220, 120), (cx + 33, cy - 6, 13, 12), border_radius=3)
         pygame.draw.rect(surface, (100, 100, 116), (cx - 8, cy + 5, 18, 24), border_radius=3)
-        if "AK" in item["name"] or "M4" in item["name"]:
+        name = item["name"]
+        if "AK" in name or "M4" in name or "SMG" in name:
             pygame.draw.rect(surface, (130, 90, 50), (cx - 42, cy + 6, 24, 8), border_radius=3)
-        if "BURST" in item["name"]:
+        if "BURST" in name or "RAIL" in name:
             pygame.draw.circle(surface, (80, 190, 255), (cx + 46, cy), 5)
+        if "SHOTGUN" in name:
+            pygame.draw.rect(surface, (130, 90, 50), (cx - 50, cy - 3, 18, 14), border_radius=4)
+            pygame.draw.rect(surface, (140, 140, 152), (cx + 20, cy - 4, 26, 8), border_radius=3)
 
     def draw(self, surface, wallet_gems, owned_guns, active_gun, owned_skins, active_skin):
         draw_background(surface)
@@ -661,23 +665,28 @@ class ShopScreen:
             pygame.draw.rect(surface, border, rect, 3 if active else 2, border_radius=16)
 
             cx = rect.centerx
-            cy = rect.y + 40
+            cy = rect.y + 36
 
             if self.tab == "GUNS":
                 self.draw_gun_preview(surface, item, cx, cy)
-                draw_text(surface, item["name"], 20, cx, rect.y + 74, WHITE, bold=True)
-                draw_text(surface, item["desc"], 15, cx, rect.y + 98, LIGHT_GRAY, bold=True)
+                draw_text(surface, item["name"], 18, cx, rect.y + 72, WHITE, bold=True)
+                draw_text(surface, item["desc"], 14, cx, rect.y + 95, LIGHT_GRAY, bold=True)
+                info_y = rect.y + 116
             else:
                 self.draw_skin_preview(surface, item, cx, cy)
-                draw_text(surface, item["name"], 20, cx, rect.y + 82, WHITE, bold=True)
+                draw_text(surface, item["name"], 18, cx, rect.y + 78, WHITE, bold=True)
+                info_y = rect.y + 100
 
             if active:
                 status = "EQUIPPED"
+                status_color = (80, 255, 160)
             elif owned:
                 status = "EQUIP"
+                status_color = (80, 190, 255)
             else:
                 status = f"BUY {item['cost']}G"
+                status_color = (255, 220, 90)
 
-            draw_text(surface, status, 18, cx, rect.bottom - 24, (255, 220, 90) if not active else (80, 255, 160), bold=True)
+            draw_text(surface, status, 17, cx, info_y, status_color, bold=True)
 
         self.back_button.draw(surface)

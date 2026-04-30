@@ -79,13 +79,19 @@ class Game:
 
         self.skin_palette = {
             "WHITE": {"name": "WHITE", "cost": 0, "fill": (245, 245, 255), "glow": (210, 210, 225), "style": "orb"},
-            "BLUE": {"name": "BLUE", "cost": 35, "fill": (90, 180, 255), "glow": (80, 190, 255), "style": "orb"},
-            "GREEN": {"name": "GREEN", "cost": 45, "fill": (100, 230, 145), "glow": (80, 255, 160), "style": "orb"},
-            "PINK": {"name": "PINK", "cost": 55, "fill": (255, 120, 200), "glow": (255, 110, 210), "style": "orb"},
-            "PURPLE": {"name": "PURPLE", "cost": 65, "fill": (180, 110, 255), "glow": (190, 120, 255), "style": "orb"},
-            "SMILE": {"name": "SMILE", "cost": 90, "fill": (255, 220, 70), "glow": (255, 220, 90), "style": "smile"},
-            "SPEEDSTER": {"name": "SPEEDSTER", "cost": 130, "fill": (65, 150, 255), "glow": (60, 185, 255), "accent": (255, 225, 65), "style": "speedster"},
-            "FIRE": {"name": "FIRE", "cost": 150, "fill": (255, 120, 55), "glow": (255, 90, 45), "accent": (255, 220, 70), "style": "fire"},
+            "BLUE": {"name": "BLUE", "cost": 120, "fill": (90, 180, 255), "glow": (80, 190, 255), "style": "orb"},
+            "GREEN": {"name": "GREEN", "cost": 180, "fill": (100, 230, 145), "glow": (80, 255, 160), "style": "orb"},
+            "PINK": {"name": "PINK", "cost": 240, "fill": (255, 120, 200), "glow": (255, 110, 210), "style": "orb"},
+            "PURPLE": {"name": "PURPLE", "cost": 320, "fill": (180, 110, 255), "glow": (190, 120, 255), "style": "orb"},
+            "SMILE": {"name": "SMILE", "cost": 450, "fill": (255, 220, 70), "glow": (255, 220, 90), "style": "smile"},
+            "SPEEDSTER": {"name": "SPEEDSTER", "cost": 700, "fill": (65, 150, 255), "glow": (60, 185, 255), "accent": (255, 225, 65), "style": "speedster"},
+            "FIRE": {"name": "FIRE", "cost": 850, "fill": (255, 120, 55), "glow": (255, 90, 45), "accent": (255, 220, 70), "style": "fire"},
+            "FOREST": {"name": "FOREST", "cost": 950, "fill": (80, 185, 90), "glow": (100, 230, 120), "accent": (228, 255, 185), "style": "leaf"},
+            "TOXIC": {"name": "TOXIC", "cost": 1100, "fill": (160, 255, 95), "glow": (175, 255, 120), "accent": (45, 95, 25), "style": "toxic"},
+            "CRYSTAL": {"name": "CRYSTAL", "cost": 1350, "fill": (125, 255, 235), "glow": (140, 255, 245), "accent": (215, 255, 255), "style": "crystal"},
+            "SHADOW": {"name": "SHADOW", "cost": 1500, "fill": (70, 70, 100), "glow": (120, 110, 170), "accent": (225, 210, 255), "style": "shadow"},
+            "CROWN": {"name": "CROWN", "cost": 1750, "fill": (255, 205, 70), "glow": (255, 225, 120), "accent": (255, 255, 255), "style": "crown"},
+            "ROSE": {"name": "ROSE", "cost": 2000, "fill": (255, 118, 168), "glow": (255, 158, 200), "accent": (255, 235, 245), "style": "rose"},
         }
 
         self.gun_catalog = {
@@ -104,7 +110,7 @@ class Game:
             },
             "GLOCK": {
                 "name": "GLOCK",
-                "cost": 80,
+                "cost": 300,
                 "damage": 23,
                 "cooldown": 0.17,
                 "bullet_speed": 1080,
@@ -117,7 +123,7 @@ class Game:
             },
             "AK47": {
                 "name": "AK-47",
-                "cost": 165,
+                "cost": 800,
                 "damage": 17,
                 "cooldown": 0.085,
                 "bullet_speed": 1120,
@@ -130,7 +136,7 @@ class Game:
             },
             "M4A4": {
                 "name": "M4A4",
-                "cost": 230,
+                "cost": 1200,
                 "damage": 19,
                 "cooldown": 0.075,
                 "bullet_speed": 1160,
@@ -143,7 +149,7 @@ class Game:
             },
             "BURST": {
                 "name": "BURST GUN",
-                "cost": 300,
+                "cost": 1700,
                 "damage": 22,
                 "cooldown": 0.36,
                 "bullet_speed": 1120,
@@ -155,6 +161,45 @@ class Game:
                 "burst_gap": 0.065,
                 "sfx": "BURST_GUN",
                 "desc": "Three-round burst",
+            },
+            "SHOTGUN": {
+                "name": "SHOTGUN",
+                "cost": 2200,
+                "damage": 16,
+                "cooldown": 0.52,
+                "bullet_speed": 980,
+                "magazine": 26,
+                "reload": 0.72,
+                "bullets": 5,
+                "spread": 0.18,
+                "sfx": "RIFLE",
+                "desc": "Wide close-range spread",
+            },
+            "SMG": {
+                "name": "SMG",
+                "cost": 2600,
+                "damage": 12,
+                "cooldown": 0.058,
+                "bullet_speed": 1180,
+                "magazine": 140,
+                "reload": 0.64,
+                "bullets": 1,
+                "spread": 0.085,
+                "sfx": "RIFLE",
+                "desc": "Very fast spray",
+            },
+            "RAILGUN": {
+                "name": "RAILGUN",
+                "cost": 3500,
+                "damage": 80,
+                "cooldown": 0.78,
+                "bullet_speed": 1450,
+                "magazine": 18,
+                "reload": 0.92,
+                "bullets": 1,
+                "spread": 0.0,
+                "sfx": "BURST_GUN",
+                "desc": "Massive single-shot damage",
             },
         }
 
@@ -586,6 +631,13 @@ class Game:
         self.level_scene_active = False
         self.level_scene_timer = 0
         self.next_level_fade_timer = 0
+        self.damage_flash_timer = 0
+        self.damage_flash_strength = 0
+        self.damage_ring_timer = 0
+        self.forest_layout = []
+        self.scene_hover_sound_played = False
+        self.scene_rope_sound_played = False
+        self.scene_extract_sound_played = False
 
         # Simple auto-target system.
         # No hard mouse radius/cone control anymore.
@@ -651,6 +703,7 @@ class Game:
         self.current_ammo = self.get_active_gun()["magazine"]
         self.reload_timer = 0
         self.burst_queue = []
+        self.forest_layout = self.generate_forest_layout(level)
 
         # Give a small heal between levels but keep the player from farming full easy HP forever.
         if not first_level:
@@ -687,6 +740,9 @@ class Game:
         self.particles = []
         self.audio.set_boss_active(False)
         self.audio.play_for_state("PLAYING")
+        self.scene_hover_sound_played = False
+        self.scene_rope_sound_played = False
+        self.scene_extract_sound_played = False
         self.add_floating_text("LEVEL CLEAR", SCREEN_WIDTH // 2, 190, (255, 230, 120))
 
     def finish_level_scene(self):
@@ -1024,6 +1080,10 @@ class Game:
         if self.next_level_fade_timer > 0:
             self.next_level_fade_timer = max(0, self.next_level_fade_timer - dt)
 
+        self.damage_flash_timer = max(0, self.damage_flash_timer - dt)
+        self.damage_ring_timer = max(0, self.damage_ring_timer - dt)
+        self.damage_flash_strength *= 0.94
+
         self.game_time += dt
         self.score += dt * (2.0 + self.level * 0.12)
 
@@ -1055,13 +1115,23 @@ class Game:
         self.level_scene_timer += dt
 
         # Cinematic timing:
-        # 0.0-0.8 game fades to black
-        # 0.8-1.5 cinematic fades in
-        # 1.5-3.6 ship descends
-        # 3.6-5.5 player walks to ship
-        # 5.5-7.2 ship lifts away
-        # 7.2-8.2 fade to next level
-        if self.level_scene_timer >= 8.2:
+        # 0.0-1.2 fade in / calm beat
+        # 1.2-3.0 transport arrives
+        # 3.0-4.8 rope ladder drops
+        # 4.8-6.4 player boards
+        # 6.4-8.2 transport extracts upward
+        # 8.2-9.0 fade to next level
+        if self.level_scene_timer >= 1.25 and not self.scene_hover_sound_played:
+            self.audio.play_ship_hover()
+            self.scene_hover_sound_played = True
+        if self.level_scene_timer >= 3.0 and not self.scene_rope_sound_played:
+            self.audio.play_ship_rope()
+            self.scene_rope_sound_played = True
+        if self.level_scene_timer >= 6.4 and not self.scene_extract_sound_played:
+            self.audio.play_ship_extract()
+            self.scene_extract_sound_played = True
+
+        if self.level_scene_timer >= 9.0:
             self.finish_level_scene()
 
     def update_spawns(self, dt):
@@ -1114,35 +1184,61 @@ class Game:
     def spawn_zombie(self):
         x, y = self.spawn_at_edge()
         level_bonus = max(0, self.level - 1)
-        hp = 30 + level_bonus * 6
-        speed = random.uniform(54, 76) + min(36, level_bonus * 3.5)
+
+        enemy_types = [
+            {"kind": "SCOUT", "weight": 0.34, "radius": (12, 16), "hp": 24, "speed": (78, 102), "damage": 8},
+            {"kind": "STALKER", "weight": 0.28, "radius": (15, 18), "hp": 34, "speed": (64, 84), "damage": 10},
+            {"kind": "BRUTE", "weight": 0.20, "radius": (18, 22), "hp": 58, "speed": (46, 62), "damage": 14},
+            {"kind": "SPIKER", "weight": 0.18, "radius": (14, 18), "hp": 42, "speed": (56, 76), "damage": 12},
+        ]
+        roll = random.random()
+        cumulative = 0.0
+        selected = enemy_types[-1]
+        for option in enemy_types:
+            cumulative += option["weight"]
+            if roll <= cumulative:
+                selected = option
+                break
+
+        radius = random.randint(*selected["radius"])
+        hp = selected["hp"] + level_bonus * (5 if selected["kind"] != "BRUTE" else 8)
+        speed = random.uniform(*selected["speed"]) + min(30, level_bonus * 2.8)
+        damage = selected["damage"] + min(12, level_bonus)
 
         self.zombies.append({
             "x": x,
             "y": y,
-            "radius": random.randint(15, 20),
+            "radius": radius,
             "hp": hp,
             "max_hp": hp,
             "speed": speed,
-            "damage": 10 + min(8, level_bonus),
+            "damage": damage,
             "hit_cd": 0,
             "boss": False,
+            "kind": selected["kind"],
         })
 
     def spawn_boss(self):
         x, y = self.spawn_at_edge()
         level_bonus = max(0, self.level - 1)
-        hp = 420 + level_bonus * 90
+        boss_kinds = [
+            ("WARLORD", 420, 42, 18),
+            ("BEHEMOTH", 520, 36, 22),
+            ("PHANTOM", 380, 54, 17),
+        ]
+        boss_kind, base_hp, base_speed, base_damage = random.choice(boss_kinds)
+        hp = base_hp + level_bonus * 95
         boss = {
             "x": x,
             "y": y,
-            "radius": 46,
+            "radius": 44 if boss_kind != "BEHEMOTH" else 52,
             "hp": hp,
             "max_hp": hp,
-            "speed": 42 + min(16, level_bonus * 1.8),
-            "damage": 18 + min(14, level_bonus * 2),
+            "speed": base_speed + min(18, level_bonus * 1.8),
+            "damage": base_damage + min(15, level_bonus * 2),
             "hit_cd": 0,
             "boss": True,
+            "kind": boss_kind,
         }
         self.boss = boss
         self.zombies.append(boss)
@@ -1151,7 +1247,7 @@ class Game:
         self.audio.play_boss_warning()
         self.audio.set_boss_active(True)
         self.audio.play_for_state("PLAYING")
-        self.add_floating_text("BOSS INCOMING", SCREEN_WIDTH // 2, 210, (255, 75, 75))
+        self.add_floating_text(f"{boss_kind} BOSS", SCREEN_WIDTH // 2, 210, (255, 75, 75))
 
     def spawn_gem(self, x=None, y=None, amount=1):
         if x is None:
@@ -1342,6 +1438,7 @@ class Game:
                 if math.hypot(bullet["x"] - zombie["x"], bullet["y"] - zombie["y"]) <= bullet["radius"] + zombie["radius"] + hit_padding:
                     zombie["hp"] -= bullet["damage"]
                     self.spawn_hit_particles(zombie["x"], zombie["y"], zombie.get("boss", False))
+                    self.add_floating_text(str(int(bullet["damage"])), zombie["x"], zombie["y"] - zombie["radius"] - 12, (255, 220, 120) if not zombie.get("boss") else (255, 120, 190))
                     self.audio.play_enemy_hit()
                     hit = True
 
@@ -1372,6 +1469,7 @@ class Game:
                     zombie["hit_cd"] = 0.75 if not zombie.get("boss") else 1.05
                     if not self.has_skill("IMMORTAL"):
                         self.player_hp -= zombie["damage"]
+                        self.trigger_damage_feedback(zombie["damage"])
                         self.add_floating_text(f"-{int(zombie['damage'])} HP", self.player.x, self.player.y - 54, (255, 100, 100))
                     else:
                         self.add_floating_text("IMMORTAL", self.player.x, self.player.y - 54, (255, 245, 120))
@@ -1457,6 +1555,25 @@ class Game:
             alive.append(skill)
 
         self.skills = alive
+
+    def trigger_damage_feedback(self, damage):
+        self.damage_flash_timer = max(self.damage_flash_timer, 0.30)
+        self.damage_ring_timer = max(self.damage_ring_timer, 0.55)
+        self.damage_flash_strength = max(self.damage_flash_strength, min(1.0, 0.35 + damage / 24.0))
+        px, py = self.player.get_position()
+        for _ in range(12):
+            angle = random.uniform(0, math.tau)
+            speed = random.uniform(60, 230)
+            self.particles.append({
+                "x": px,
+                "y": py,
+                "vx": math.cos(angle) * speed,
+                "vy": math.sin(angle) * speed,
+                "life": 0.30,
+                "max": 0.30,
+                "size": random.randint(2, 5),
+                "color": (255, 70, 70),
+            })
 
     def spawn_muzzle_particle(self, x, y, angle):
         for _ in range(3):
@@ -1663,6 +1780,7 @@ class Game:
         self.draw_hud()
         self.draw_pause_button()
         self.draw_floating_texts()
+        self.draw_damage_feedback_overlay()
 
         if self.next_level_fade_timer > 0:
             fade = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
@@ -1705,122 +1823,324 @@ class Game:
         t = self.level_scene_timer
         self.draw_gameplay_background()
 
-        # Cinematic background stars.
-        for i in range(34):
-            x = int((i * 107 + t * 18) % SCREEN_WIDTH)
-            y = int((i * 61 + t * 9) % SCREEN_HEIGHT)
-            pygame.draw.circle(self.screen, (90, 95, 125), (x, y), 1)
+        # Dark cinematic grade and moving haze.
+        haze = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        haze.fill((8, 12, 18, 90))
+        for i in range(6):
+            ox = int((t * (18 + i * 4) + i * 210) % (SCREEN_WIDTH + 240)) - 120
+            pygame.draw.ellipse(haze, (120, 140, 120, 18), (ox, 80 + i * 95, 260, 70))
+        self.screen.blit(haze, (0, 0))
 
         center_x = SCREEN_WIDTH // 2
-        ground_y = SCREEN_HEIGHT // 2 + 140
+        ground_y = SCREEN_HEIGHT // 2 + 115
+        ship_x = center_x + 190
+        player_x = center_x - 15
+        player_y = ground_y
+        ship_y = -170
+        rope_len = 0
+        attach = False
 
-        # Ship position and player position by phase.
-        if t < 1.5:
-            ship_y = -120
-            player_x = center_x
-            player_y = ground_y
-        elif t < 3.6:
-            k = min(1, (t - 1.5) / 2.1)
-            ship_y = -120 + k * 250
-            player_x = center_x
-            player_y = ground_y
-        elif t < 5.5:
-            ship_y = 130
-            k = min(1, (t - 3.6) / 1.9)
-            player_x = center_x + k * 145
-            player_y = ground_y - k * 55
+        if t < 1.2:
+            ship_y = -170
+        elif t < 3.0:
+            k = min(1, (t - 1.2) / 1.8)
+            ship_y = -170 + k * 275
+            rope_len = int(30 + 135 * k)
+        elif t < 4.8:
+            ship_y = 105
+            rope_len = 168
+            k = min(1, (t - 3.0) / 1.8)
+            player_x = center_x - 15 + k * 155
+            player_y = ground_y - k * 18
+        elif t < 6.4:
+            ship_y = 105
+            rope_len = 168
+            k = min(1, (t - 4.8) / 1.6)
+            player_x = ship_x - 12
+            player_y = ground_y - 18 - k * 132
+            attach = True
         else:
-            k = min(1, (t - 5.5) / 1.7)
-            ship_y = 130 - k * 360
-            player_x = center_x + 145
-            player_y = ground_y - 55 - k * 360
+            k = min(1, (t - 6.4) / 1.8)
+            ship_y = 105 - k * 420
+            rope_len = max(42, int(168 - 110 * k))
+            player_x = ship_x - 12
+            player_y = ship_y + rope_len - 14
+            attach = True
 
-        self.draw_cinematic_ship(center_x + 145, ship_y)
-        self.draw_cinematic_player(player_x, player_y)
+        shadow = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        pygame.draw.ellipse(shadow, (0, 0, 0, 90), (ship_x - 170, ground_y + 18, 260, 48))
+        self.screen.blit(shadow, (0, 0))
 
-        draw_text(self.screen, f"LEVEL {self.level} CLEAR", 44, SCREEN_WIDTH // 2, 92, WHITE, bold=True)
-        draw_text(self.screen, "Extraction complete. Next sector incoming...", 24, SCREEN_WIDTH // 2, 134, LIGHT_GRAY, bold=True)
+        self.draw_cinematic_ship(ship_x, ship_y, rope_length=rope_len)
+        self.draw_cinematic_player(player_x, player_y, attached=attach)
 
-        # Fade in/out.
-        if t < 0.8:
-            alpha = int(255 * (t / 0.8))
-        elif t < 1.5:
-            alpha = int(255 * (1 - (t - 0.8) / 0.7))
-        elif t > 7.2:
-            alpha = int(255 * min(1, (t - 7.2) / 1.0))
+        draw_text(self.screen, f"LEVEL {self.level} CLEAR", 42, SCREEN_WIDTH // 2, 86, WHITE, bold=True)
+        draw_text(self.screen, "Military transport extraction in progress...", 22, SCREEN_WIDTH // 2, 126, LIGHT_GRAY, bold=True)
+
+        if t < 0.75:
+            alpha = int(255 * (1 - t / 0.75))
+        elif t > 8.2:
+            alpha = int(255 * min(1, (t - 8.2) / 0.8))
         else:
             alpha = 0
+
+        vignette = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        for i in range(8):
+            pygame.draw.rect(vignette, (0, 0, 0, 12), (i * 8, i * 8, SCREEN_WIDTH - i * 16, SCREEN_HEIGHT - i * 16), border_radius=24)
+        self.screen.blit(vignette, (0, 0))
 
         if alpha > 0:
             overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
             overlay.fill((0, 0, 0, alpha))
             self.screen.blit(overlay, (0, 0))
 
-    def draw_cinematic_ship(self, x, y):
+    def draw_cinematic_ship(self, x, y, rope_length=0):
         x, y = int(x), int(y)
-        ship = pygame.Surface((230, 150), pygame.SRCALPHA)
+        ship = pygame.Surface((360, 200), pygame.SRCALPHA)
+        t = pygame.time.get_ticks() * 0.001
 
-        # Glowing UFO / flying vehicle.
-        pygame.draw.ellipse(ship, (60, 80, 110, 210), (20, 55, 190, 58))
-        pygame.draw.ellipse(ship, (130, 170, 230, 230), (52, 30, 126, 58))
-        pygame.draw.ellipse(ship, (235, 245, 255, 210), (78, 42, 74, 24))
-        pygame.draw.ellipse(ship, (25, 28, 38, 255), (20, 55, 190, 58), 3)
+        # Transport body.
+        pygame.draw.polygon(ship, (74, 86, 94, 245), [(30, 118), (96, 76), (246, 76), (312, 110), (296, 138), (76, 138)])
+        pygame.draw.polygon(ship, (46, 54, 62, 255), [(96, 78), (248, 78), (278, 96), (80, 96)])
+        pygame.draw.polygon(ship, (96, 108, 118, 255), [(154, 76), (194, 34), (246, 34), (214, 76)])
+        pygame.draw.rect(ship, (32, 40, 48), pygame.Rect(80, 106, 196, 20), border_radius=8)
+        for wx in (102, 154, 206):
+            pygame.draw.rect(ship, (138, 182, 214), pygame.Rect(wx, 86, 36, 12), border_radius=4)
+        pygame.draw.circle(ship, (95, 200, 255), (62, 112), 9)
+        pygame.draw.circle(ship, (95, 200, 255), (300, 112), 9)
+        pygame.draw.rect(ship, (58, 64, 72), pygame.Rect(276, 96, 44, 10), border_radius=4)
+        pygame.draw.rect(ship, (52, 56, 62), pygame.Rect(316, 90, 24, 7), border_radius=3)
+        pygame.draw.line(ship, (64, 70, 78), (328, 94), (350, 78), 6)
 
-        for lx in (52, 88, 124, 160):
-            pygame.draw.circle(ship, (80, 190, 255, 230), (lx, 88), 7)
+        rotor_left = (110, 56)
+        rotor_right = (248, 56)
+        blade = max(0.12, abs(math.sin(t * 24)))
+        for rotor in (rotor_left, rotor_right):
+            pygame.draw.line(ship, (200, 210, 220), (rotor[0] - int(62 * blade), rotor[1]), (rotor[0] + int(62 * blade), rotor[1]), 3)
+            pygame.draw.line(ship, (200, 210, 220), (rotor[0], rotor[1] - int(18 * blade)), (rotor[0], rotor[1] + int(18 * blade)), 2)
 
-        beam = pygame.Surface((180, 210), pygame.SRCALPHA)
-        pygame.draw.polygon(beam, (80, 190, 255, 38), [(60, 0), (120, 0), (180, 210), (0, 210)])
-        self.screen.blit(beam, (x - 90, y + 78))
-        self.screen.blit(ship, (x - 115, y - 75))
+        # Search lights.
+        beam = pygame.Surface((260, 260), pygame.SRCALPHA)
+        pygame.draw.polygon(beam, (160, 220, 255, 36), [(88, 0), (172, 0), (260, 260), (0, 260)])
+        self.screen.blit(beam, (x - 130, y + 88))
 
-    def draw_cinematic_player(self, x, y):
+        self.screen.blit(ship, (x - 180, y - 92))
+
+        if rope_length > 0:
+            rope_x = x - 8
+            rope_top = y + 58
+            pygame.draw.line(self.screen, (180, 178, 170), (rope_x, rope_top), (rope_x, rope_top + rope_length), 3)
+            pygame.draw.line(self.screen, (180, 178, 170), (rope_x + 18, rope_top), (rope_x + 18, rope_top + rope_length), 3)
+            for i in range(0, rope_length, 14):
+                pygame.draw.line(self.screen, (210, 205, 190), (rope_x - 1, rope_top + i), (rope_x + 19, rope_top + i), 2)
+
+    def draw_cinematic_player(self, x, y, attached=False):
         x, y = int(x), int(y)
         glow = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-        pygame.draw.circle(glow, (*self.player.glow_color, 55), (x, y), 36)
+        pygame.draw.circle(glow, (*self.player.glow_color, 48), (x, y), 34)
         self.screen.blit(glow, (0, 0))
+        if attached:
+            pygame.draw.line(self.screen, (220, 220, 220), (x + 10, y - 12), (x + 18, y - 34), 2)
+            pygame.draw.line(self.screen, (220, 220, 220), (x - 10, y - 12), (x - 2, y - 34), 2)
+            pygame.draw.line(self.screen, WHITE, (x - 9, y + 12), (x - 15, y + 28), 2)
+            pygame.draw.line(self.screen, WHITE, (x + 9, y + 12), (x + 15, y + 28), 2)
         pygame.draw.circle(self.screen, self.player.fill_color, (x, y), self.player.radius)
         pygame.draw.circle(self.screen, WHITE, (x - 6, y - 6), 5)
         pygame.draw.circle(self.screen, WHITE, (x, y), self.player.radius, 2)
 
+    def generate_forest_layout(self, level):
+        rng = random.Random(8000 + level)
+        layout = []
+        safe_zone = pygame.Rect(SCREEN_WIDTH // 2 - 250, SCREEN_HEIGHT // 2 - 160, 500, 360)
+
+        for _ in range(13):
+            x = rng.randint(80, SCREEN_WIDTH - 80)
+            y = rng.randint(90, SCREEN_HEIGHT - 110)
+            if safe_zone.inflate(10, 10).collidepoint(x, y):
+                continue
+            layout.append({"type": "tree", "x": x, "y": y, "scale": rng.uniform(0.85, 1.25)})
+
+        for _ in range(14):
+            x = rng.randint(60, SCREEN_WIDTH - 60)
+            y = rng.randint(90, SCREEN_HEIGHT - 80)
+            if safe_zone.inflate(60, 40).collidepoint(x, y):
+                continue
+            layout.append({"type": "bush", "x": x, "y": y, "scale": rng.uniform(0.8, 1.22)})
+
+        for _ in range(7):
+            x = rng.randint(80, SCREEN_WIDTH - 80)
+            y = rng.randint(140, SCREEN_HEIGHT - 90)
+            if safe_zone.inflate(80, 60).collidepoint(x, y):
+                continue
+            layout.append({"type": "rock", "x": x, "y": y, "scale": rng.uniform(0.85, 1.15)})
+
+        for _ in range(4):
+            x = rng.randint(140, SCREEN_WIDTH - 140)
+            y = rng.randint(160, SCREEN_HEIGHT - 120)
+            if safe_zone.inflate(120, 80).collidepoint(x, y):
+                continue
+            layout.append({"type": "log", "x": x, "y": y, "scale": rng.uniform(0.9, 1.15)})
+
+        return sorted(layout, key=lambda item: item["y"])
+
+    def draw_tree(self, x, y, scale=1.0):
+        trunk_h = int(48 * scale)
+        trunk_w = int(18 * scale)
+        canopy_r = int(34 * scale)
+        trunk = pygame.Rect(int(x - trunk_w // 2), int(y - trunk_h // 2), trunk_w, trunk_h)
+        pygame.draw.rect(self.screen, (92, 58, 32), trunk, border_radius=6)
+        pygame.draw.rect(self.screen, (56, 34, 20), trunk, 2, border_radius=6)
+        for ox, oy, rr, col in [(-22, -18, canopy_r, (98, 176, 70)), (8, -30, int(canopy_r * 0.95), (112, 190, 78)), (30, -14, int(canopy_r * 0.88), (84, 164, 62)), (0, -2, int(canopy_r * 1.1), (122, 202, 86))]:
+            pygame.draw.circle(self.screen, col, (int(x + ox * scale), int(y - trunk_h // 2 + oy * scale)), rr)
+        pygame.draw.circle(self.screen, (162, 230, 124), (int(x - 12 * scale), int(y - trunk_h // 2 - 22 * scale)), max(6, int(10 * scale)))
+
+    def draw_bush(self, x, y, scale=1.0):
+        for ox, oy, rr, col in [(-14, 2, 14, (84, 168, 68)), (0, -2, 18, (96, 182, 70)), (18, 3, 13, (78, 160, 64))]:
+            pygame.draw.circle(self.screen, col, (int(x + ox * scale), int(y + oy * scale)), int(rr * scale))
+        for i in range(3):
+            pygame.draw.circle(self.screen, (232, 90 + i * 25, 120 + i * 35), (int(x - 10 * scale + i * 12 * scale), int(y + 8 * scale)), max(2, int(3 * scale)))
+
+    def draw_rock(self, x, y, scale=1.0):
+        points = [
+            (x - 28 * scale, y + 10 * scale),
+            (x - 16 * scale, y - 16 * scale),
+            (x + 12 * scale, y - 22 * scale),
+            (x + 28 * scale, y - 4 * scale),
+            (x + 22 * scale, y + 18 * scale),
+            (x - 20 * scale, y + 20 * scale),
+        ]
+        pygame.draw.polygon(self.screen, (108, 108, 106), points)
+        pygame.draw.polygon(self.screen, (68, 68, 70), points, 2)
+        pygame.draw.line(self.screen, (152, 152, 150), (int(x - 6 * scale), int(y - 10 * scale)), (int(x + 10 * scale), int(y + 8 * scale)), 2)
+
+    def draw_log(self, x, y, scale=1.0):
+        rect = pygame.Rect(int(x - 42 * scale), int(y - 7 * scale), int(84 * scale), int(14 * scale))
+        pygame.draw.rect(self.screen, (98, 60, 28), rect, border_radius=6)
+        pygame.draw.rect(self.screen, (56, 34, 16), rect, 2, border_radius=6)
+        pygame.draw.circle(self.screen, (124, 84, 44), (rect.left + 4, rect.centery), max(4, int(6 * scale)))
+        pygame.draw.circle(self.screen, (124, 84, 44), (rect.right - 4, rect.centery), max(4, int(6 * scale)))
+
+    def draw_ruin(self, x, y, scale=1.0):
+        body = [
+            (x - 62 * scale, y + 26 * scale),
+            (x - 64 * scale, y - 24 * scale),
+            (x - 16 * scale, y - 36 * scale),
+            (x + 20 * scale, y - 20 * scale),
+            (x + 30 * scale, y + 26 * scale),
+        ]
+        pygame.draw.polygon(self.screen, (136, 130, 118), body)
+        pygame.draw.polygon(self.screen, (92, 88, 82), body, 2)
+        arch = pygame.Rect(int(x - 18 * scale), int(y - 10 * scale), int(26 * scale), int(36 * scale))
+        pygame.draw.rect(self.screen, (56, 56, 58), arch, border_radius=6)
+        pygame.draw.line(self.screen, (168, 162, 150), (int(x - 58 * scale), int(y - 2 * scale)), (int(x + 24 * scale), int(y - 10 * scale)), 2)
+        for i in range(5):
+            cx = int(x - 48 * scale + i * 16 * scale)
+            cy = int(y - 14 * scale + (i % 2) * 6 * scale)
+            pygame.draw.rect(self.screen, (154, 148, 138), (cx, cy, int(12 * scale), int(8 * scale)), border_radius=2)
+
     def draw_gameplay_background(self):
-        self.screen.fill(BLACK)
         t = pygame.time.get_ticks() * 0.001
+        # Dark forest floor base.
+        for y in range(SCREEN_HEIGHT):
+            k = y / max(1, SCREEN_HEIGHT - 1)
+            color = (
+                int(44 + 22 * k),
+                int(92 + 34 * k),
+                int(34 + 16 * k),
+            )
+            pygame.draw.line(self.screen, color, (0, y), (SCREEN_WIDTH, y))
 
-        for i in range(24):
-            x = int((i * 117 + t * 32) % SCREEN_WIDTH)
-            y = int((i * 77 + t * 26) % SCREEN_HEIGHT)
-            pygame.draw.circle(self.screen, (22, 22, 32), (x, y), 1)
+        # Top-down grass texture.
+        for i in range(190):
+            gx = (i * 83) % SCREEN_WIDTH
+            gy = 40 + (i * 47) % (SCREEN_HEIGHT - 70)
+            rr = 8 + (i % 4) * 5
+            col = (62 + (i % 3) * 12, 112 + (i % 5) * 8, 46 + (i % 4) * 6)
+            pygame.draw.ellipse(self.screen, col, (gx - rr, gy - rr // 2, rr * 2, rr))
 
-        for i in range(14):
-            x = int((i * 141 + t * 18) % SCREEN_WIDTH)
-            pygame.draw.line(self.screen, (20, 20, 30), (x, 0), (x + 55, SCREEN_HEIGHT), 1)
+        # A brighter but still moody playable clearing.
+        pygame.draw.ellipse(self.screen, (96, 132, 62), (SCREEN_WIDTH // 2 - 340, SCREEN_HEIGHT // 2 - 180, 680, 360))
+        pygame.draw.ellipse(self.screen, (114, 150, 72), (SCREEN_WIDTH // 2 - 245, SCREEN_HEIGHT // 2 - 110, 490, 220))
+
+        # Ruins and stone details similar in spirit to the provided forest reference.
+        self.draw_ruin(150, 220, 1.08)
+        self.draw_ruin(118, 310, 0.82)
+        self.draw_rock(308, 348, 1.18)
+        self.draw_log(470, 296, 1.02)
+
+        # Small flowers / bushes.
+        flower_points = [(330, 332), (395, 246), (505, 350), (620, 280), (760, 326), (950, 250), (1110, 328)]
+        for fx, fy in flower_points:
+            self.draw_bush(fx, fy, 0.92)
+
+        # Tree line and props.
+        for item in getattr(self, 'forest_layout', []):
+            if item['type'] == 'tree':
+                self.draw_tree(item['x'], item['y'], item['scale'])
+            elif item['type'] == 'bush':
+                self.draw_bush(item['x'], item['y'], item['scale'])
+            elif item['type'] == 'rock':
+                self.draw_rock(item['x'], item['y'], item['scale'])
+            elif item['type'] == 'log':
+                self.draw_log(item['x'], item['y'], item['scale'])
+
+        # Ground shadow / vignette for darker mood.
+        shade = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+        pygame.draw.ellipse(shade, (0, 0, 0, 35), (SCREEN_WIDTH // 2 - 360, SCREEN_HEIGHT // 2 - 180, 720, 360))
+        for i in range(7):
+            pygame.draw.rect(shade, (0, 0, 0, 12), (i * 10, i * 10, SCREEN_WIDTH - i * 20, SCREEN_HEIGHT - i * 20), border_radius=28)
+        # subtle wind streaks
+        for i in range(16):
+            sx = int((i * 123 + t * (18 + i % 4)) % (SCREEN_WIDTH + 140)) - 70
+            sy = 90 + (i * 41) % (SCREEN_HEIGHT - 160)
+            pygame.draw.line(shade, (120, 150, 120, 14), (sx, sy), (sx + 38, sy - 8), 2)
+        self.screen.blit(shade, (0, 0))
 
     def draw_zombie(self, zombie):
         x, y = int(zombie["x"]), int(zombie["y"])
         r = int(zombie["radius"])
         boss = zombie.get("boss", False)
+        kind = zombie.get("kind", "STALKER")
 
-        body_color = (185, 30, 40) if not boss else (185, 20, 90)
-        glow_color = (255, 45, 55) if not boss else (255, 45, 150)
+        palette = {
+            "SCOUT": ((120, 170, 60), (182, 235, 112), (56, 88, 24)),
+            "STALKER": ((180, 42, 52), (255, 82, 92), (100, 20, 26)),
+            "BRUTE": ((116, 88, 52), (188, 146, 92), (72, 56, 30)),
+            "SPIKER": ((120, 54, 130), (196, 96, 220), (72, 28, 82)),
+            "WARLORD": ((170, 30, 72), (255, 90, 150), (88, 16, 40)),
+            "BEHEMOTH": ((112, 84, 48), (240, 180, 88), (70, 46, 20)),
+            "PHANTOM": ((80, 86, 148), (158, 170, 255), (44, 48, 92)),
+        }
+        body_color, glow_color, edge_color = palette.get(kind, ((185, 30, 40), (255, 45, 55), (95, 10, 16)))
 
         glow = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-        pygame.draw.circle(glow, (*glow_color, 30), (x, y), r + 14)
+        pygame.draw.circle(glow, (*glow_color, 34 if boss else 24), (x, y), r + (18 if boss else 12))
         self.screen.blit(glow, (0, 0))
 
         if boss:
             pygame.draw.circle(self.screen, body_color, (x, y), r)
-            pygame.draw.circle(self.screen, (90, 5, 20), (x, y), r, 4)
+            pygame.draw.circle(self.screen, edge_color, (x, y), r, 4)
             pygame.draw.circle(self.screen, WHITE, (x - 14, y - 9), 5)
             pygame.draw.circle(self.screen, WHITE, (x + 14, y - 9), 5)
+            if kind == "WARLORD":
+                pygame.draw.polygon(self.screen, (255, 220, 120), [(x - 18, y - r - 2), (x - 8, y - r - 16), (x, y - r - 4), (x + 8, y - r - 16), (x + 18, y - r - 2)])
+            elif kind == "BEHEMOTH":
+                pygame.draw.rect(self.screen, (84, 58, 26), pygame.Rect(x - 22, y + 2, 44, 16), border_radius=7)
+            elif kind == "PHANTOM":
+                pygame.draw.arc(self.screen, (220, 220, 255), pygame.Rect(x - r - 6, y - r - 6, r * 2 + 12, r * 2 + 12), 0.6, 2.5, 3)
         else:
             rect = pygame.Rect(x - r, y - r, r * 2, r * 2)
-            pygame.draw.rect(self.screen, body_color, rect, border_radius=7)
-            pygame.draw.rect(self.screen, (95, 10, 16), rect, 2, border_radius=7)
-            pygame.draw.circle(self.screen, WHITE, (x - 6, y - 4), 3)
-            pygame.draw.circle(self.screen, WHITE, (x + 6, y - 4), 3)
+            pygame.draw.rect(self.screen, body_color, rect, border_radius=max(6, r // 2))
+            pygame.draw.rect(self.screen, edge_color, rect, 2, border_radius=max(6, r // 2))
+            pygame.draw.circle(self.screen, WHITE, (x - 5, y - 3), 3)
+            pygame.draw.circle(self.screen, WHITE, (x + 5, y - 3), 3)
+            if kind == "SCOUT":
+                pygame.draw.line(self.screen, glow_color, (x - r, y + r - 4), (x + r, y - r + 4), 2)
+            elif kind == "BRUTE":
+                pygame.draw.rect(self.screen, (58, 40, 20), pygame.Rect(x - 8, y + 2, 16, 10), border_radius=4)
+            elif kind == "SPIKER":
+                pygame.draw.polygon(self.screen, glow_color, [(x - 10, y - r), (x, y - r - 10), (x + 10, y - r)])
 
-        # HP bar.
         width = r * 2
         hp_ratio = max(0, zombie["hp"] / zombie["max_hp"])
         bar = pygame.Rect(x - width // 2, y - r - 14, width, 5)
@@ -1869,6 +2189,25 @@ class Game:
             pygame.draw.circle(surface, (255, 55, 55, int(90 * ratio)), (int(p["x"]), int(p["y"])), max(1, p["size"] // 2))
 
         self.screen.blit(surface, (0, 0))
+
+    def draw_damage_feedback_overlay(self):
+        if self.damage_flash_timer <= 0 and self.damage_ring_timer <= 0 and self.player_hp > 30:
+            return
+
+        overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+
+        if self.damage_flash_timer > 0:
+            alpha = int(80 * max(0, min(1, self.damage_flash_timer / 0.30)) * max(0.3, self.damage_flash_strength))
+            overlay.fill((120, 0, 0, alpha))
+
+        if self.damage_ring_timer > 0 or self.player_hp <= 30:
+            pulse = 0.55 + 0.45 * ((math.sin(pygame.time.get_ticks() * 0.02) + 1) / 2)
+            edge_alpha = int((95 if self.player_hp <= 30 else 65) * pulse)
+            pygame.draw.rect(overlay, (255, 50, 50, edge_alpha), (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT), 16)
+            pygame.draw.rect(overlay, (255, 90, 90, edge_alpha // 2), (12, 12, SCREEN_WIDTH - 24, SCREEN_HEIGHT - 24), 8)
+            draw_text(overlay, "DAMAGE!", 28, SCREEN_WIDTH // 2, 96, (255, 230, 230), bold=True)
+
+        self.screen.blit(overlay, (0, 0))
 
     def draw_hud(self):
         # Top panels.

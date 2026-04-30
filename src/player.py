@@ -230,6 +230,28 @@ class Player:
             self.draw_speedster(surface, gx, gy)
         elif self.skin_style == "fire":
             self.draw_fire(surface, gx, gy)
+        elif self.skin_style == "leaf":
+            self.draw_orb(surface, gx, gy)
+            pygame.draw.polygon(surface, self.accent_color, [(gx, gy - 18), (gx + 12, gy - 2), (gx, gy + 14), (gx - 10, gy - 2)])
+        elif self.skin_style == "toxic":
+            self.draw_orb(surface, gx, gy)
+            pygame.draw.circle(surface, self.accent_color, (gx - 7, gy - 6), 4)
+            pygame.draw.circle(surface, self.accent_color, (gx + 8, gy + 2), 5)
+            pygame.draw.circle(surface, self.accent_color, (gx - 1, gy + 9), 3)
+        elif self.skin_style == "crystal":
+            self.draw_orb(surface, gx, gy)
+            pygame.draw.polygon(surface, self.accent_color, [(gx, gy - 18), (gx + 12, gy), (gx, gy + 15), (gx - 12, gy)])
+        elif self.skin_style == "shadow":
+            self.draw_orb(surface, gx, gy)
+            pygame.draw.arc(surface, self.accent_color, pygame.Rect(gx - 16, gy - 16, 32, 32), 0.6, 2.4, 3)
+        elif self.skin_style == "crown":
+            self.draw_orb(surface, gx, gy)
+            pygame.draw.polygon(surface, self.accent_color, [(gx - 12, gy - 19), (gx - 5, gy - 8), (gx, gy - 18), (gx + 6, gy - 8), (gx + 13, gy - 19), (gx + 13, gy - 5), (gx - 12, gy - 5)])
+        elif self.skin_style == "rose":
+            self.draw_orb(surface, gx, gy)
+            pygame.draw.circle(surface, self.accent_color, (gx - 4, gy - 2), 5)
+            pygame.draw.circle(surface, self.accent_color, (gx + 4, gy - 2), 5)
+            pygame.draw.circle(surface, self.accent_color, (gx, gy + 4), 5)
         else:
             self.draw_orb(surface, gx, gy)
 
