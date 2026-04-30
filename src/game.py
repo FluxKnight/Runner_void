@@ -237,12 +237,15 @@ class Game:
         self.last_server_sync_time = time.time()
 
 
-    def sync_users_from_server(self):
-        if not self.can_sync_now():
+    def sync_users_from_server(self, force=False):
+        # RANKS needs force=True so it always shows the real global leaderboard.
+        if not force and hasattr(self, "can_sync_now") and not self.can_sync_now():
             return False
 
-        self.mark_server_sync()
-        data = self.server_request("/users", timeout=0.7)
+        if hasattr(self, "mark_server_sync"):
+            self.mark_server_sync()
+
+        data = self.server_request("/users", timeout=1.4)
 
         if not data or not data.get("ok"):
             return False
@@ -384,7 +387,12 @@ class Game:
 
         if server_data:
             if server_data.get("ok"):
-                self.sync_users_from_server()
+                users = server_data.get("users")
+                if isinstance(users, dict):
+                    self.users = users
+                    self.save_users()
+                else:
+                    self.sync_users_from_server(force=True)
                 return True, "Account created on server. Please log in."
             return False, server_data.get("message", "Server create failed.")
 
@@ -473,7 +481,12 @@ class Game:
         self.profile["best_gems"] = max(self.profile.get("best_gems", 0), self.profile.get("wallet_gems", 0))
 
     def get_rank_entries(self, category):
-        self.sync_users_from_server()
+        # First push this account's latest stats, then force pull all global users.
+        if self.current_user:
+            self.sync_current_user_to_server(force=True)
+
+        self.sync_users_from_server(force=True)
+
         entries = []
         for username, profile in self.users.items():
             display_name = profile.get("display_name", username)
@@ -483,7 +496,8 @@ class Game:
                 value = profile.get("best_gems", profile.get("wallet_gems", 0))
             else:
                 value = profile.get("best_score", 0)
-            entries.append((display_name, value, username))
+
+            entries.append((display_name, int(value or 0), username))
 
         entries.sort(key=lambda item: item[1], reverse=True)
         return entries[:10]
@@ -815,6 +829,8 @@ class Game:
     def handle_ranks_action(self, action):
         if action in ("BEST_LEVEL", "BEST_GEMS", "BEST_SCORE"):
             self.ranks_screen.category = action
+            self.sync_current_user_to_server(force=True)
+            self.sync_users_from_server(force=True)
         elif action == "BACK":
             self.change_state("HOME", transition_type="return_slide")
 
@@ -828,6 +844,8 @@ class Game:
             self.profile_screen.message = ""
             self.change_state("PROFILE", transition_type="cyber_grid")
         elif action == "RANKS":
+            self.sync_current_user_to_server(force=True)
+            self.sync_users_from_server(force=True)
             self.change_state("RANKS", transition_type="neon_wipe")
         elif action == "HOW_TO_PLAY":
             self.change_state("HOW_TO_PLAY", transition_type="neon_wipe")

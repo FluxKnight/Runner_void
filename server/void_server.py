@@ -128,6 +128,16 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json({"ok": True, "users": users})
             return
 
+        if path == "/debug_users":
+            users = load_users()
+            self.send_json({
+                "ok": True,
+                "count": len(users),
+                "usernames": list(users.keys()),
+                "users": users,
+            })
+            return
+
         self.send_json({"ok": False, "message": "Not found"}, status=404)
 
     def do_POST(self):
