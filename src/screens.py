@@ -512,9 +512,12 @@ class RanksScreen:
                 return action
         return None
 
-    def draw(self, surface, entries):
+    def draw(self, surface, entries, status_message=""):
         draw_background(surface)
         draw_text(surface, "RANKS", 64, SCREEN_WIDTH // 2, 100, WHITE, bold=True)
+        if status_message:
+            color = (120, 255, 170) if "GLOBAL" in status_message else (255, 170, 90)
+            draw_text(surface, status_message, 17, SCREEN_WIDTH // 2, 142, color, bold=True)
 
         title = {
             "BEST_LEVEL": "BEST LEVEL",

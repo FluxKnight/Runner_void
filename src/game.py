@@ -67,6 +67,14 @@ class Game:
         self.current_user = None
         self.login_error = ""
         self.profile_message = ""
+
+        # Ranks FPS fix:
+        # Never fetch server ranks every frame. Cache rank entries and refresh only
+        # when opening RANKS or changing rank tab.
+        self.cached_rank_entries = []
+        self.cached_rank_category = "BEST_LEVEL"
+        self.ranks_status_message = ""
+
         self.profile_path = Path.cwd() / "data" / "profile.json"
 
         self.skin_palette = {
@@ -206,7 +214,7 @@ class Game:
         except Exception:
             return default_url
 
-    def server_request(self, path, payload=None, timeout=0.55):
+    def server_request(self, path, payload=None, timeout=0.65):
         url = self.server_url.rstrip("/") + path
 
         try:
@@ -245,7 +253,7 @@ class Game:
         if hasattr(self, "mark_server_sync"):
             self.mark_server_sync()
 
-        data = self.server_request("/users", timeout=1.4)
+        data = self.server_request("/users", timeout=0.8)
 
         if not data or not data.get("ok"):
             return False
@@ -279,7 +287,7 @@ class Game:
             "username": self.current_user,
             "profile": self.profile,
         }
-        data = self.server_request("/sync_profile", payload, timeout=0.8)
+        data = self.server_request("/sync_profile", payload, timeout=0.65)
 
         if data and data.get("ok"):
             # Keep local users updated, but do not immediately call another server request.
@@ -480,13 +488,7 @@ class Game:
         self.profile["best_score"] = max(self.profile.get("best_score", 0), int(self.score))
         self.profile["best_gems"] = max(self.profile.get("best_gems", 0), self.profile.get("wallet_gems", 0))
 
-    def get_rank_entries(self, category):
-        # First push this account's latest stats, then force pull all global users.
-        if self.current_user:
-            self.sync_current_user_to_server(force=True)
-
-        self.sync_users_from_server(force=True)
-
+    def build_rank_entries_from_cache(self, category):
         entries = []
         for username, profile in self.users.items():
             display_name = profile.get("display_name", username)
@@ -497,10 +499,43 @@ class Game:
             else:
                 value = profile.get("best_score", 0)
 
-            entries.append((display_name, int(value or 0), username))
+            try:
+                value = int(value or 0)
+            except Exception:
+                value = 0
+
+            entries.append((display_name, value, username))
 
         entries.sort(key=lambda item: item[1], reverse=True)
         return entries[:10]
+
+    def refresh_ranks_cache(self, category=None, force_server=True):
+        if category is None:
+            category = self.ranks_screen.category if hasattr(self, "ranks_screen") else self.cached_rank_category
+
+        self.cached_rank_category = category
+
+        # Push latest player stats once, then pull all users once.
+        # This is intentionally NOT called every frame.
+        if force_server and self.current_user:
+            self.sync_current_user_to_server(force=True)
+
+        if force_server:
+            ok = self.sync_users_from_server(force=True)
+            self.ranks_status_message = "GLOBAL RANKS" if ok else "OFFLINE CACHE"
+        else:
+            self.ranks_status_message = "CACHE"
+
+        self.cached_rank_entries = self.build_rank_entries_from_cache(category)
+        return self.cached_rank_entries
+
+    def get_rank_entries(self, category):
+        # Draw loop uses cached entries only. No internet request here.
+        if category != self.cached_rank_category:
+            self.cached_rank_category = category
+            self.cached_rank_entries = self.build_rank_entries_from_cache(category)
+
+        return self.cached_rank_entries
 
 
     def load_profile(self):
@@ -829,8 +864,7 @@ class Game:
     def handle_ranks_action(self, action):
         if action in ("BEST_LEVEL", "BEST_GEMS", "BEST_SCORE"):
             self.ranks_screen.category = action
-            self.sync_current_user_to_server(force=True)
-            self.sync_users_from_server(force=True)
+            self.refresh_ranks_cache(action, force_server=True)
         elif action == "BACK":
             self.change_state("HOME", transition_type="return_slide")
 
@@ -844,8 +878,7 @@ class Game:
             self.profile_screen.message = ""
             self.change_state("PROFILE", transition_type="cyber_grid")
         elif action == "RANKS":
-            self.sync_current_user_to_server(force=True)
-            self.sync_users_from_server(force=True)
+            self.refresh_ranks_cache(self.ranks_screen.category, force_server=True)
             self.change_state("RANKS", transition_type="neon_wipe")
         elif action == "HOW_TO_PLAY":
             self.change_state("HOW_TO_PLAY", transition_type="neon_wipe")
@@ -1576,7 +1609,7 @@ class Game:
             self.profile_screen.draw(self.screen, self.profile, self.current_user)
 
         elif self.state == "RANKS":
-            self.ranks_screen.draw(self.screen, self.get_rank_entries(self.ranks_screen.category))
+            self.ranks_screen.draw(self.screen, self.get_rank_entries(self.ranks_screen.category), self.ranks_status_message)
 
         elif self.state == "HOW_TO_PLAY":
             self.how_to_play_screen.draw(self.screen)
