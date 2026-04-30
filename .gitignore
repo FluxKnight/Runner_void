@@ -9,3 +9,13 @@ venv/
 .env
 
 data/
+__pycache__/
+*.pyc
+build/
+dist/
+*.spec
+__pycache__/
+*.pyc
+build/
+dist/
+*.spec

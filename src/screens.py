@@ -1,385 +1,372 @@
 # src/screens.py
 
 import pygame
+from src import settings as S
 
-from src.settings import (
-    SCREEN_WIDTH,
-    SCREEN_HEIGHT,
-    BLACK,
-    DARK_GRAY,
-    WHITE,
-    LIGHT_GRAY,
-    GRAY,
-    RED,
-    TITLE_FONT_SIZE,
-    MENU_FONT_SIZE,
-    SMALL_FONT_SIZE,
-)
-from src.ui import Button, draw_text, draw_title, draw_panel
+SCREEN_WIDTH = getattr(S, "SCREEN_WIDTH", 1280)
+SCREEN_HEIGHT = getattr(S, "SCREEN_HEIGHT", 720)
+BLACK = getattr(S, "BLACK", (0, 0, 0))
+WHITE = getattr(S, "WHITE", (255, 255, 255))
+LIGHT_GRAY = getattr(S, "LIGHT_GRAY", (205, 205, 210))
+RED = getattr(S, "RED", (220, 40, 40))
 
 
-def draw_background(screen):
-    screen.fill(BLACK)
-
-    # Minimal animated falling red blocks in background
-    time = pygame.time.get_ticks() * 0.001
-
-    for i in range(9):
-        x = 100 + i * 135
-        y = int((time * 45 + i * 95) % (SCREEN_HEIGHT + 120)) - 120
-        size = 10 + (i % 3) * 6
-
-        pygame.draw.rect(
-            screen,
-            (55, 8, 14),
-            pygame.Rect(x, y, size, size),
-            border_radius=2,
-        )
-
-        pygame.draw.line(
-            screen,
-            (40, 5, 10),
-            (x + size // 2, y - 45),
-            (x + size // 2, y),
-            1,
-        )
-
-    # Center decorative line
-    pygame.draw.line(
-        screen,
-        (25, 25, 32),
-        (SCREEN_WIDTH // 2 - 180, SCREEN_HEIGHT // 2 + 30),
-        (SCREEN_WIDTH // 2 + 180, SCREEN_HEIGHT // 2 + 30),
-        1,
-    )
+def font(size, bold=False):
+    return pygame.font.SysFont("arial", size, bold=bold)
 
 
-class HomeScreen:
-    def __init__(self):
-        button_width = 320
-        button_height = 56
-        button_x = SCREEN_WIDTH // 2 - button_width // 2
-        start_y = 350
-        gap = 72
+def draw_text(surface, text, size, x, y, color, center=True, bold=False):
+    img = font(size, bold).render(text, True, color)
+    rect = img.get_rect()
+    if center:
+        rect.center = (x, y)
+    else:
+        rect.topleft = (x, y)
+    surface.blit(img, rect)
+    return rect
 
-        self.buttons = {
-            "play": Button(button_x, start_y, button_width, button_height, "PLAY"),
-            "how_to_play": Button(button_x, start_y + gap, button_width, button_height, "HOW TO PLAY", 24),
-            "settings": Button(button_x, start_y + gap * 2, button_width, button_height, "SETTINGS", 24),
-            "exit": Button(button_x, start_y + gap * 3, button_width, button_height, "EXIT", 24),
-        }
+
+def draw_background(surface):
+    t = pygame.time.get_ticks() * 0.001
+
+    # Deep vertical gradient background.
+    for y in range(SCREEN_HEIGHT):
+        k = y / max(1, SCREEN_HEIGHT - 1)
+        r = int(4 + 10 * k)
+        g = int(5 + 6 * k)
+        b = int(12 + 18 * k)
+        pygame.draw.line(surface, (r, g, b), (0, y), (SCREEN_WIDTH, y))
+
+    # Soft central glow behind the menu stack.
+    glow = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    center_x = SCREEN_WIDTH // 2
+    center_y = SCREEN_HEIGHT // 2 - 18
+    pulse = 0.72 + 0.28 * ((pygame.math.Vector2(1, 0).rotate(t * 48).x + 1) / 2)
+    pygame.draw.circle(glow, (44, 14, 28, int(58 * pulse)), (center_x, center_y), 250)
+    pygame.draw.circle(glow, (80, 20, 28, int(34 * pulse)), (center_x, center_y - 10), 165)
+    pygame.draw.circle(glow, (36, 110, 255, 14), (center_x, center_y + 42), 118)
+    surface.blit(glow, (0, 0))
+
+    # Futuristic grid near the bottom.
+    horizon_y = SCREEN_HEIGHT - 150
+    grid = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
+    pygame.draw.line(grid, (65, 65, 82, 60), (90, horizon_y), (SCREEN_WIDTH - 90, horizon_y), 1)
+    for i in range(-8, 9):
+        x = center_x + i * 86
+        pygame.draw.line(grid, (38, 38, 54, 48), (center_x, horizon_y), (x, SCREEN_HEIGHT), 1)
+    for j in range(1, 8):
+        yy = horizon_y + int((j / 8) ** 1.7 * 220)
+        pygame.draw.line(grid, (34, 34, 48, max(15, 55 - j * 5)), (110, yy), (SCREEN_WIDTH - 110, yy), 1)
+    surface.blit(grid, (0, 0))
+
+    # Floating cyber particles / red data nodes.
+    for i in range(18):
+        px = int((i * 97 + t * (16 + (i % 4) * 6)) % (SCREEN_WIDTH + 160)) - 80
+        py = int((i * 59 + t * (10 + (i % 3) * 4)) % (SCREEN_HEIGHT + 180)) - 90
+        size = 2 + (i % 3)
+        tail = 18 + (i % 5) * 12
+        alpha = 60 + (i % 4) * 20
+        particle = pygame.Surface((30, tail + 24), pygame.SRCALPHA)
+        pygame.draw.line(particle, (140, 18, 30, alpha // 2), (15, 0), (15, tail), 1)
+        pygame.draw.rect(particle, (135, 20, 30, alpha), (15 - size, tail - size, size * 2 + 1, size * 2 + 1), border_radius=2)
+        surface.blit(particle, (px - 15, py - 8))
+
+    # Tiny stars / ambient dots.
+    for i in range(26):
+        sx = int((i * 141 + t * (6 + i % 5)) % SCREEN_WIDTH)
+        sy = int((i * 83 + (i % 4) * 37) % SCREEN_HEIGHT)
+        twinkle = 105 + int(70 * ((pygame.math.Vector2(1, 0).rotate(t * 70 + i * 17).x + 1) / 2))
+        surface.fill((170, 185, 255, twinkle), ((sx, sy), (2, 2)), special_flags=pygame.BLEND_RGBA_ADD)
+
+    # Decorative footer line.
+    pygame.draw.line(surface, (54, 56, 72), (120, SCREEN_HEIGHT - 86), (SCREEN_WIDTH - 120, SCREEN_HEIGHT - 86), 1)
+
+
+class Button:
+    def __init__(self, x, y, w, h, text, action):
+        self.rect = pygame.Rect(x, y, w, h)
+        self.text = text
+        self.action = action
+        self.hovered = False
 
     def update(self, mouse_pos):
-        for button in self.buttons.values():
+        self.hovered = self.rect.collidepoint(mouse_pos)
+
+    def draw(self, surface):
+        fill_color = (22, 22, 30) if not self.hovered else (32, 14, 20)
+        border_color = (84, 84, 98) if not self.hovered else RED
+        pygame.draw.rect(surface, fill_color, self.rect, border_radius=16)
+        pygame.draw.rect(surface, border_color, self.rect, 2, border_radius=16)
+        draw_text(surface, self.text, 22, self.rect.centerx, self.rect.centery, WHITE, bold=True)
+
+    def handle_event(self, event):
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and self.rect.collidepoint(event.pos):
+            return self.action
+        return None
+
+
+class BaseMenuScreen:
+    def __init__(self, title, subtitle=""):
+        self.title = title
+        self.subtitle = subtitle
+        self.buttons = []
+
+    def update(self, mouse_pos):
+        for button in self.buttons:
             button.update(mouse_pos)
 
     def handle_event(self, event):
-        if self.buttons["play"].is_clicked(event):
-            return "PLAY"
-
-        if self.buttons["how_to_play"].is_clicked(event):
-            return "HOW_TO_PLAY"
-
-        if self.buttons["settings"].is_clicked(event):
-            return "SETTINGS"
-
-        if self.buttons["exit"].is_clicked(event):
-            return "EXIT"
-
+        for button in self.buttons:
+            action = button.handle_event(event)
+            if action:
+                return action
         return None
 
-    def draw(self, screen):
-        draw_background(screen)
+    def draw_header(self, surface):
+        draw_background(surface)
+        draw_text(surface, self.title, 64, SCREEN_WIDTH // 2, 118, WHITE, bold=True)
+        pygame.draw.line(surface, RED, (SCREEN_WIDTH // 2 - 88, 176), (SCREEN_WIDTH // 2 - 18, 176), 3)
+        pygame.draw.circle(surface, RED, (SCREEN_WIDTH // 2, 176), 4)
+        pygame.draw.line(surface, RED, (SCREEN_WIDTH // 2 + 18, 176), (SCREEN_WIDTH // 2 + 88, 176), 3)
+        if self.subtitle:
+            draw_text(surface, self.subtitle, 21, SCREEN_WIDTH // 2, 198, LIGHT_GRAY)
 
-        draw_title(screen, "VOID RUNNER", SCREEN_WIDTH // 2, 160)
-
-        draw_text(
-            screen,
-            "Move the dot. Avoid the red blocks. Survive.",
-            SMALL_FONT_SIZE,
-            SCREEN_WIDTH // 2,
-            235,
-            LIGHT_GRAY,
-        )
-
-        # Small player preview
-        pygame.draw.circle(screen, (80, 80, 90), (SCREEN_WIDTH // 2, 292), 18)
-        pygame.draw.circle(screen, WHITE, (SCREEN_WIDTH // 2, 292), 9)
-
-        for button in self.buttons.values():
-            button.draw(screen)
-
-        draw_text(
-            screen,
-            "Desktop Edition",
-            SMALL_FONT_SIZE,
-            SCREEN_WIDTH // 2,
-            SCREEN_HEIGHT - 35,
-            GRAY,
-        )
+    def draw(self, surface):
+        self.draw_header(surface)
+        for button in self.buttons:
+            button.draw(surface)
 
 
-class HowToPlayScreen:
+class HomeScreen(BaseMenuScreen):
     def __init__(self):
-        self.back_button = Button(SCREEN_WIDTH // 2 - 130, 620, 260, 52, "BACK", 24)
-
-    def update(self, mouse_pos):
-        self.back_button.update(mouse_pos)
-
-    def handle_event(self, event):
-        if self.back_button.is_clicked(event):
-            return "BACK"
-
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            return "BACK"
-
-        return None
-
-    def draw_instruction_panel(self, screen, x, y, number, title, lines):
-        rect = pygame.Rect(x, y, 255, 260)
-        draw_panel(screen, rect, border_color=GRAY, fill_color=DARK_GRAY)
-
-        draw_text(screen, number, SMALL_FONT_SIZE, x + 22, y + 18, RED, center=False, bold=True)
-        draw_text(screen, title, 30, x + 127, y + 65, WHITE, bold=True)
-
-        pygame.draw.line(screen, RED, (x + 75, y + 95), (x + 180, y + 95), 2)
-
-        line_y = y + 130
-        for line in lines:
-            draw_text(screen, line, 19, x + 127, line_y, LIGHT_GRAY)
-            line_y += 30
-
-    def draw(self, screen):
-        draw_background(screen)
-
-        draw_title(screen, "HOW TO PLAY", SCREEN_WIDTH // 2, 105)
-
-        panel_y = 210
-        gap = 285
-        start_x = 80
-
-        self.draw_instruction_panel(
-            screen,
-            start_x,
-            panel_y,
-            "01",
-            "MOVE",
-            [
-                "Use WASD",
-                "or arrow keys",
-                "to move.",
-            ],
-        )
-
-        self.draw_instruction_panel(
-            screen,
-            start_x + gap,
-            panel_y,
-            "02",
-            "AVOID",
-            [
-                "Avoid falling",
-                "red blocks.",
-                "One hit ends it.",
-            ],
-        )
-
-        self.draw_instruction_panel(
-            screen,
-            start_x + gap * 2,
-            panel_y,
-            "03",
-            "SURVIVE",
-            [
-                "Stay alive",
-                "as long as",
-                "possible.",
-            ],
-        )
-
-        self.draw_instruction_panel(
-            screen,
-            start_x + gap * 3,
-            panel_y,
-            "04",
-            "SCORE",
-            [
-                "Score grows",
-                "over time.",
-                "Beat the best.",
-            ],
-        )
-
-        self.back_button.draw(screen)
+        super().__init__("VOID RUNNER", "Dodge red enemies, collect blue gems, survive longer.")
+        bx, by, bw, bh, gap = SCREEN_WIDTH // 2 - 190, 266, 380, 62, 18
+        labels = [
+            ("PLAY", "PLAY"),
+            ("HOW TO PLAY", "HOW_TO_PLAY"),
+            ("SETTINGS", "SETTINGS"),
+            ("SKINS", "SKINS"),
+            ("EXIT", "EXIT"),
+        ]
+        self.buttons = [Button(bx, by + i * (bh + gap), bw, bh, label, action) for i, (label, action) in enumerate(labels)]
 
 
-class SettingsScreen:
+class HowToPlayScreen(BaseMenuScreen):
     def __init__(self):
+        super().__init__("HOW TO PLAY", "Simple controls, clean survival gameplay.")
+        self.back_button = Button(SCREEN_WIDTH // 2 - 160, SCREEN_HEIGHT - 120, 320, 58, "BACK", "BACK")
+        self.buttons = [self.back_button]
+
+    def draw(self, surface):
+        self.draw_header(surface)
+        panel = pygame.Rect(SCREEN_WIDTH // 2 - 310, 246, 620, 270)
+        pygame.draw.rect(surface, (15, 15, 22), panel, border_radius=18)
+        pygame.draw.rect(surface, (75, 75, 88), panel, 2, border_radius=18)
+        lines = [
+            "Move with WASD or Arrow Keys.",
+            "Collect blue diamonds to earn more score.",
+            "Avoid red enemy blocks at all costs.",
+            "Press P or ESC to pause the game.",
+            "Press M to mute/unmute background music.",
+            "Press F11 to toggle fullscreen.",
+        ]
+        start_y = 286
+        for i, line in enumerate(lines):
+            pygame.draw.circle(surface, (80, 190, 255), (SCREEN_WIDTH // 2 - 248, start_y + i * 34), 5)
+            draw_text(surface, line, 24, SCREEN_WIDTH // 2 - 228, start_y - 11 + i * 34, WHITE, center=False)
+        self.back_button.draw(surface)
+
+
+class SettingsScreen(BaseMenuScreen):
+    def __init__(self):
+        super().__init__("SETTINGS", "Basic options for the game.")
         self.sound_on = True
         self.fullscreen_on = False
         self.difficulties = ["EASY", "NORMAL", "HARD"]
         self.difficulty_index = 1
+        self._build_buttons()
 
-        button_width = 360
-        button_height = 56
-        button_x = SCREEN_WIDTH // 2 - button_width // 2
-
-        self.sound_button = Button(button_x, 280, button_width, button_height, "SOUND: ON", 24)
-        self.fullscreen_button = Button(button_x, 355, button_width, button_height, "FULLSCREEN: OFF", 24)
-        self.difficulty_button = Button(button_x, 430, button_width, button_height, "DIFFICULTY: NORMAL", 24)
-        self.back_button = Button(button_x, 535, button_width, button_height, "BACK", 24)
-
+    def _build_buttons(self):
+        bx, by, bw, bh, gap = SCREEN_WIDTH // 2 - 190, 286, 380, 62, 22
         self.buttons = [
-            self.sound_button,
-            self.fullscreen_button,
-            self.difficulty_button,
-            self.back_button,
+            Button(bx, by, bw, bh, f"SOUND: {'ON' if self.sound_on else 'OFF'}", "TOGGLE_SOUND"),
+            Button(bx, by + (bh + gap), bw, bh, f"FULLSCREEN: {'ON' if self.fullscreen_on else 'OFF'}", "TOGGLE_FULLSCREEN"),
+            Button(bx, by + 2 * (bh + gap), bw, bh, f"DIFFICULTY: {self.difficulties[self.difficulty_index]}", "CHANGE_DIFFICULTY"),
+            Button(bx, by + 4 * (bh + gap), bw, bh, "BACK", "BACK"),
         ]
 
-    def update_button_texts(self):
-        self.sound_button.text = "SOUND: ON" if self.sound_on else "SOUND: OFF"
-        self.fullscreen_button.text = "FULLSCREEN: ON" if self.fullscreen_on else "FULLSCREEN: OFF"
-        self.difficulty_button.text = f"DIFFICULTY: {self.difficulties[self.difficulty_index]}"
-
     def update(self, mouse_pos):
-        self.update_button_texts()
-
-        for button in self.buttons:
-            button.update(mouse_pos)
+        self._build_buttons()
+        super().update(mouse_pos)
 
     def handle_event(self, event):
-        if self.sound_button.is_clicked(event):
+        self._build_buttons()
+        action = super().handle_event(event)
+        if action == "TOGGLE_SOUND":
             self.sound_on = not self.sound_on
-            return "TOGGLE_SOUND"
-
-        if self.fullscreen_button.is_clicked(event):
+        elif action == "TOGGLE_FULLSCREEN":
             self.fullscreen_on = not self.fullscreen_on
-            return "TOGGLE_FULLSCREEN"
-
-        if self.difficulty_button.is_clicked(event):
+        elif action == "CHANGE_DIFFICULTY":
             self.difficulty_index = (self.difficulty_index + 1) % len(self.difficulties)
-            return "CHANGE_DIFFICULTY"
-
-        if self.back_button.is_clicked(event):
-            return "BACK"
-
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            return "BACK"
-
-        return None
-
-    def draw(self, screen):
-        draw_background(screen)
-
-        draw_title(screen, "SETTINGS", SCREEN_WIDTH // 2, 135)
-
-        draw_text(
-            screen,
-            "Basic options for the game.",
-            SMALL_FONT_SIZE,
-            SCREEN_WIDTH // 2,
-            205,
-            LIGHT_GRAY,
-        )
-
-        for button in self.buttons:
-            button.draw(screen)
+        return action
 
 
-class PauseScreen:
+class PauseScreen(BaseMenuScreen):
     def __init__(self):
-        button_width = 320
-        button_height = 56
-        button_x = SCREEN_WIDTH // 2 - button_width // 2
-        start_y = 275
-        gap = 72
+        super().__init__("PAUSED", "Take a breath. Jump back in when ready.")
+        bx, by, bw, bh, gap = SCREEN_WIDTH // 2 - 190, 280, 380, 60, 18
+        labels = [("RESUME", "RESUME"), ("RESTART", "RESTART"), ("HOME", "HOME"), ("EXIT", "EXIT")]
+        self.buttons = [Button(bx, by + i * (bh + gap), bw, bh, label, action) for i, (label, action) in enumerate(labels)]
 
-        self.buttons = {
-            "resume": Button(button_x, start_y, button_width, button_height, "RESUME", 24),
-            "restart": Button(button_x, start_y + gap, button_width, button_height, "RESTART", 24),
-            "home": Button(button_x, start_y + gap * 2, button_width, button_height, "HOME", 24),
-            "exit": Button(button_x, start_y + gap * 3, button_width, button_height, "EXIT", 24),
-        }
-
-    def update(self, mouse_pos):
-        for button in self.buttons.values():
-            button.update(mouse_pos)
-
-    def handle_event(self, event):
-        if self.buttons["resume"].is_clicked(event):
-            return "RESUME"
-
-        if self.buttons["restart"].is_clicked(event):
-            return "RESTART"
-
-        if self.buttons["home"].is_clicked(event):
-            return "HOME"
-
-        if self.buttons["exit"].is_clicked(event):
-            return "EXIT"
-
-        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-            return "RESUME"
-
-        return None
-
-    def draw(self, screen):
+    def draw(self, surface):
         overlay = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.SRCALPHA)
-        overlay.fill((0, 0, 0, 180))
-        screen.blit(overlay, (0, 0))
+        overlay.fill((0, 0, 0, 155))
+        surface.blit(overlay, (0, 0))
+        panel = pygame.Rect(SCREEN_WIDTH // 2 - 250, 120, 500, 500)
+        pygame.draw.rect(surface, (10, 10, 16), panel, border_radius=22)
+        pygame.draw.rect(surface, (85, 85, 98), panel, 2, border_radius=22)
+        draw_text(surface, self.title, 58, SCREEN_WIDTH // 2, 182, WHITE, bold=True)
+        draw_text(surface, self.subtitle, 21, SCREEN_WIDTH // 2, 218, LIGHT_GRAY)
+        for button in self.buttons:
+            button.draw(surface)
 
-        draw_title(screen, "PAUSED", SCREEN_WIDTH // 2, 160)
 
-        for button in self.buttons.values():
-            button.draw(screen)
-
-
-class GameOverScreen:
+class GameOverScreen(BaseMenuScreen):
     def __init__(self):
-        button_width = 320
-        button_height = 56
-        button_x = SCREEN_WIDTH // 2 - button_width // 2
-        start_y = 420
-        gap = 72
+        super().__init__("GAME OVER", "The void got you this time.")
+        bx, by, bw, bh, gap = SCREEN_WIDTH // 2 - 190, 362, 380, 60, 18
+        labels = [("RETRY", "RETRY"), ("HOME", "HOME"), ("EXIT", "EXIT")]
+        self.buttons = [Button(bx, by + i * (bh + gap), bw, bh, label, action) for i, (label, action) in enumerate(labels)]
 
-        self.buttons = {
-            "retry": Button(button_x, start_y, button_width, button_height, "RETRY", 24),
-            "home": Button(button_x, start_y + gap, button_width, button_height, "HOME", 24),
-            "exit": Button(button_x, start_y + gap * 2, button_width, button_height, "EXIT", 24),
-        }
+    def draw(self, surface, score, best_score):
+        draw_background(surface)
+        draw_text(surface, self.title, 66, SCREEN_WIDTH // 2, 128, WHITE, bold=True)
+        draw_text(surface, self.subtitle, 22, SCREEN_WIDTH // 2, 168, LIGHT_GRAY)
+        score_panel = pygame.Rect(SCREEN_WIDTH // 2 - 220, 214, 440, 104)
+        pygame.draw.rect(surface, (16, 16, 22), score_panel, border_radius=18)
+        pygame.draw.rect(surface, (78, 78, 90), score_panel, 2, border_radius=18)
+        draw_text(surface, f"SCORE: {score}", 30, SCREEN_WIDTH // 2, 248, WHITE, bold=True)
+        draw_text(surface, f"BEST: {best_score}", 24, SCREEN_WIDTH // 2, 287, (80, 190, 255), bold=True)
+        for button in self.buttons:
+            button.draw(surface)
+
+
+class SkinsScreen:
+    def __init__(self, skin_palette, selected_skin="WHITE"):
+        self.skin_palette = skin_palette
+        self.selected_skin = selected_skin
+        self.back_button = Button(SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT - 86, 300, 52, "BACK", "BACK")
+        self.card_rects = {}
+        self.hovered_skin = None
+        self._build_cards()
+
+    def _build_cards(self):
+        self.card_rects = {}
+        keys = list(self.skin_palette.keys())
+        card_w = 150
+        card_h = 142
+        gap = 22
+        columns = 4
+        total_w = card_w * columns + gap * (columns - 1)
+        start_x = SCREEN_WIDTH // 2 - total_w // 2
+        start_y = 232
+
+        for i, key in enumerate(keys):
+            row = i // columns
+            col = i % columns
+            x = start_x + col * (card_w + gap)
+            y = start_y + row * (card_h + gap)
+            self.card_rects[key] = pygame.Rect(x, y, card_w, card_h)
 
     def update(self, mouse_pos):
-        for button in self.buttons.values():
-            button.update(mouse_pos)
+        self.hovered_skin = None
+        for key, rect in self.card_rects.items():
+            if rect.collidepoint(mouse_pos):
+                self.hovered_skin = key
+
+        self.back_button.update(mouse_pos)
 
     def handle_event(self, event):
-        if self.buttons["retry"].is_clicked(event):
-            return "RETRY"
+        action = self.back_button.handle_event(event)
+        if action:
+            return action
 
-        if self.buttons["home"].is_clicked(event):
-            return "HOME"
-
-        if self.buttons["exit"].is_clicked(event):
-            return "EXIT"
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            for key, rect in self.card_rects.items():
+                if rect.collidepoint(event.pos):
+                    self.selected_skin = key
+                    return ("SELECT_SKIN", key)
 
         return None
 
-    def draw(self, screen, score, best_score):
-        draw_background(screen)
+    def draw_preview(self, surface, palette, cx, cy):
+        fill = palette["fill"]
+        glow = palette["glow"]
+        accent = palette.get("accent", WHITE)
+        style = palette.get("style", "orb")
 
-        draw_title(screen, "GAME OVER", SCREEN_WIDTH // 2, 130)
+        pygame.draw.circle(surface, glow, (cx, cy), 31)
+        pygame.draw.circle(surface, fill, (cx, cy), 22)
 
-        score_panel = pygame.Rect(SCREEN_WIDTH // 2 - 280, 230, 240, 110)
-        best_panel = pygame.Rect(SCREEN_WIDTH // 2 + 40, 230, 240, 110)
+        if style == "smile":
+            pygame.draw.circle(surface, (35, 28, 22), (cx - 7, cy - 4), 3)
+            pygame.draw.circle(surface, (35, 28, 22), (cx + 7, cy - 4), 3)
+            pygame.draw.arc(surface, (35, 28, 22), pygame.Rect(cx - 10, cy - 4, 20, 16), 0.3, 2.8, 2)
 
-        draw_panel(screen, score_panel, border_color=RED, fill_color=DARK_GRAY)
-        draw_panel(screen, best_panel, border_color=RED, fill_color=DARK_GRAY)
+        elif style == "speedster":
+            bolt = [
+                (cx - 2, cy - 19),
+                (cx + 12, cy - 2),
+                (cx + 5, cy - 2),
+                (cx + 13, cy + 18),
+                (cx - 12, cy - 4),
+                (cx - 2, cy - 4),
+            ]
+            pygame.draw.polygon(surface, accent, bolt)
 
-        draw_text(screen, "SCORE", SMALL_FONT_SIZE, score_panel.centerx, score_panel.y + 30, RED, bold=True)
-        draw_text(screen, int(score), 42, score_panel.centerx, score_panel.y + 72, WHITE, bold=True)
+        elif style == "fire":
+            flame = [
+                (cx, cy - 18),
+                (cx + 11, cy - 4),
+                (cx + 7, cy + 15),
+                (cx, cy + 8),
+                (cx - 8, cy + 15),
+                (cx - 11, cy - 4),
+            ]
+            pygame.draw.polygon(surface, accent, flame)
 
-        draw_text(screen, "BEST", SMALL_FONT_SIZE, best_panel.centerx, best_panel.y + 30, RED, bold=True)
-        draw_text(screen, int(best_score), 42, best_panel.centerx, best_panel.y + 72, WHITE, bold=True)
+        pygame.draw.circle(surface, WHITE, (cx - 7, cy - 8), 4)
+        pygame.draw.circle(surface, (245, 245, 255), (cx, cy), 22, 2)
 
-        for button in self.buttons.values():
-            button.draw(screen)
+    def draw(self, surface):
+        draw_background(surface)
+        draw_text(surface, "SKINS", 64, SCREEN_WIDTH // 2, 100, WHITE, bold=True)
+        draw_text(surface, "Pick a skin. The trail uses the same color while you move.", 22, SCREEN_WIDTH // 2, 146, LIGHT_GRAY)
+
+        for key, rect in self.card_rects.items():
+            palette = self.skin_palette[key]
+            hovered = self.hovered_skin == key
+            active = self.selected_skin == key
+
+            fill = (16, 16, 22) if not hovered else (23, 23, 32)
+            border = palette["glow"] if active else ((100, 100, 112) if not hovered else WHITE)
+            border_width = 4 if active else 2
+
+            pygame.draw.rect(surface, fill, rect, border_radius=18)
+            pygame.draw.rect(surface, border, rect, border_width, border_radius=18)
+
+            cx = rect.centerx
+            cy = rect.y + 48
+
+            self.draw_preview(surface, palette, cx, cy)
+
+            draw_text(surface, palette["name"], 17, cx, rect.y + 92, WHITE, bold=True)
+
+            if active:
+                badge = pygame.Rect(rect.centerx - 46, rect.bottom - 30, 92, 22)
+                pygame.draw.rect(surface, palette["glow"], badge, border_radius=11)
+                draw_text(surface, "ACTIVE", 14, badge.centerx, badge.centery, BLACK, bold=True)
+            else:
+                draw_text(surface, "CLICK", 14, cx, rect.bottom - 19, LIGHT_GRAY, bold=True)
+
+        self.back_button.draw(surface)
