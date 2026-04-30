@@ -321,7 +321,7 @@ class HomeScreen(BaseMenuScreen):
         self.draw_header(surface)
         draw_text(surface, f"Welcome, {display_name}", 22, SCREEN_WIDTH // 2, 220, (255, 230, 120), bold=True)
 
-        status = "SERVER: ONLINE" if server_online else "SERVER: OFFLINE / LOCAL"
+        status = "SERVER: GLOBAL ONLINE" if server_online else "SERVER: CONNECTING / OFFLINE"
         status_color = (120, 255, 170) if server_online else (255, 170, 90)
         draw_text(surface, status, 17, 26, 92, status_color, center=False, bold=True)
         draw_text(surface, server_url, 13, 26, 116, LIGHT_GRAY, center=False)

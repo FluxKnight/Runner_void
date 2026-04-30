@@ -4,6 +4,7 @@ import json
 import math
 import random
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -56,6 +57,13 @@ class Game:
         self.server_config_path = Path.cwd() / "data" / "server_config.json"
         self.server_url = self.load_server_url()
         self.server_online = False
+
+        # Anti-freeze server sync state.
+        # Never let gameplay freeze because of slow/offline internet.
+        self.last_server_sync_time = 0
+        self.server_sync_cooldown = 8.0
+        self.pending_server_sync = False
+
         self.current_user = None
         self.login_error = ""
         self.profile_message = ""
@@ -182,7 +190,7 @@ class Game:
         }
 
     def load_server_url(self):
-        default_url = "http://127.0.0.1:5050"
+        default_url = "https://void-runner-server.onrender.com"
 
         try:
             self.server_config_path.parent.mkdir(parents=True, exist_ok=True)
@@ -198,7 +206,7 @@ class Game:
         except Exception:
             return default_url
 
-    def server_request(self, path, payload=None, timeout=2.2):
+    def server_request(self, path, payload=None, timeout=0.55):
         url = self.server_url.rstrip("/") + path
 
         try:
@@ -222,8 +230,19 @@ class Game:
             self.server_online = False
             return None
 
+    def can_sync_now(self):
+        return time.time() - self.last_server_sync_time >= self.server_sync_cooldown
+
+    def mark_server_sync(self):
+        self.last_server_sync_time = time.time()
+
+
     def sync_users_from_server(self):
-        data = self.server_request("/users")
+        if not self.can_sync_now():
+            return False
+
+        self.mark_server_sync()
+        data = self.server_request("/users", timeout=0.7)
 
         if not data or not data.get("ok"):
             return False
@@ -236,18 +255,35 @@ class Game:
 
         return False
 
-    def sync_current_user_to_server(self):
+    def sync_current_user_to_server(self, force=False):
         if not self.current_user:
             return False
+
+        # Critical anti-freeze rule:
+        # never do blocking internet sync while actively playing.
+        if getattr(self, "state", "") == "PLAYING" and not force:
+            self.pending_server_sync = True
+            return False
+
+        if not force and not self.can_sync_now():
+            self.pending_server_sync = True
+            return False
+
+        self.mark_server_sync()
+        self.pending_server_sync = False
 
         payload = {
             "username": self.current_user,
             "profile": self.profile,
         }
-        data = self.server_request("/sync_profile", payload)
+        data = self.server_request("/sync_profile", payload, timeout=0.8)
 
         if data and data.get("ok"):
-            self.sync_users_from_server()
+            # Keep local users updated, but do not immediately call another server request.
+            users = data.get("users")
+            if isinstance(users, dict):
+                self.users = users
+                self.save_users()
             return True
 
         return False
@@ -608,6 +644,7 @@ class Game:
         self.level += 1
         self.profile["best_level"] = max(self.profile.get("best_level", 1), self.level)
         self.save_profile()
+        self.sync_current_user_to_server(force=True)
         self.level_scene_active = False
         self.level_scene_timer = 0
         self.next_level_fade_timer = 1.15
@@ -890,6 +927,9 @@ class Game:
     def update(self, mouse_pos, dt):
         self.update_cursor_visibility()
         self.audio.update_for_state(self.state)
+
+        if self.pending_server_sync and self.state != "PLAYING":
+            self.sync_current_user_to_server(force=False)
 
         if self.transition.active:
             self.transition.update(dt)
@@ -1479,6 +1519,7 @@ class Game:
         self.profile["best_level"] = max(self.profile.get("best_level", 1), self.level)
         self.profile["best_gems"] = max(self.profile.get("best_gems", 0), self.profile.get("wallet_gems", 0))
         self.save_profile()
+        self.sync_current_user_to_server(force=True)
         self.audio.set_boss_active(False)
         self.change_state("GAME_OVER", transition_type="crash_glitch")
 
